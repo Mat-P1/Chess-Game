@@ -1,3 +1,5 @@
+using ChessConsoleApp.Chessboard.Exceptions;
+
 namespace ChessConsoleApp.Chessboard;
 
 public class GameBoard
@@ -12,15 +14,48 @@ public class GameBoard
         GameBoardColumns = gameBoardColumns;
         _gameBoardPieces = new Piece[gameBoardRows, gameBoardColumns];
     }
-
-    public void PlacePiece(Piece setPiece, Position? setPosition)
-    {
-        _gameBoardPieces[setPosition.RowPosition, setPosition.ColumnPosition] = setPiece;
-        setPiece.PiecePosition = setPosition;
-    }
     
     public Piece ReturnPiecesPositions(int pieceRow, int pieceColumn)
     {
         return _gameBoardPieces[pieceRow, pieceColumn];
+    }
+    
+    public Piece ReturnPiecesPositions(Position position)
+    {
+        return _gameBoardPieces[position.RowPosition, position.ColumnPosition];
+    }
+
+    public bool IsValidPosition(Position validPosition)
+    {
+        if (validPosition.RowPosition < 0 || validPosition.RowPosition >= GameBoardRows ||
+            validPosition.ColumnPosition < 0 || validPosition.ColumnPosition >= GameBoardRows)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    public void ValidatePosition(Position validatePosition)
+    {
+        if (!IsValidPosition(validatePosition))
+        {
+            throw new GameBoardExceptions("Invalid position!");
+        }
+    }
+
+    public bool DoesPieceExists(Position pieceExists)
+    {
+        ValidatePosition(pieceExists);
+        return ReturnPiecesPositions(pieceExists) != null;
+    }
+    
+    public void PlacePiece(Piece setPiece, Position setPosition)
+    {
+        if (DoesPieceExists(setPosition))
+        {
+            throw new GameBoardExceptions("A piece is already placed here!");
+        }
+        _gameBoardPieces[setPosition.RowPosition, setPosition.ColumnPosition] = setPiece;
+        setPiece.PiecePosition = setPosition;
     }
 }

@@ -4,7 +4,7 @@ namespace ChessConsoleApp.Chessboard;
 
 public class Piece
 {
-    public Position? PiecePosition { get; set; }
+    public Position PiecePosition { get; set; }
     public Color PieceColor { get; protected set; }
     public int NumberOfMoves { get; protected set; }
     public GameBoard PieceBoard { get; protected set; }
