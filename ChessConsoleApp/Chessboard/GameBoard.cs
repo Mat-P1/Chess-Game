@@ -13,6 +13,12 @@ public class GameBoard
         _gameBoardPieces = new Piece[gameBoardRows, gameBoardColumns];
     }
 
+    public void PlacePiece(Piece setPiece, Position? setPosition)
+    {
+        _gameBoardPieces[setPosition.RowPosition, setPosition.ColumnPosition] = setPiece;
+        setPiece.PiecePosition = setPosition;
+    }
+    
     public Piece ReturnPiecesPositions(int pieceRow, int pieceColumn)
     {
         return _gameBoardPieces[pieceRow, pieceColumn];

@@ -13,7 +13,7 @@ public class DisplayScreen
                 if (gameBoardScreen.ReturnPiecesPositions(i, j) == null)
                 {
                     Console.Write("- ");
-                }
+                }   
                 else
                 {
                     Console.Write(gameBoardScreen.ReturnPiecesPositions(i, j) + " ");
