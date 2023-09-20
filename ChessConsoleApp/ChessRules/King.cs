@@ -1,7 +1,7 @@
 using ChessConsoleApp.Chessboard;
 using ChessConsoleApp.Chessboard.Enumerations;
 
-namespace ChessConsoleApp.ChessGame;
+namespace ChessConsoleApp.ChessRules;
 
 public class King : Piece
 {
