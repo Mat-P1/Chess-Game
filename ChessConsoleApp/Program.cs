@@ -1,5 +1,4 @@
 ﻿using ChessConsoleApp.Chessboard;
-using ChessConsoleApp.Chessboard.Enumerations;
 using ChessConsoleApp.Chessboard.Exceptions;
 using ChessConsoleApp.ChessRules;
 
@@ -11,13 +10,21 @@ internal class Program
     {
         try
         {
-            GameBoard newGameBoard = new GameBoard(8, 8);
+            ChessMatch newMatch = new ChessMatch();
             
-            newGameBoard.PlacePiece(new Rook(Color.Black, newGameBoard), new Position(0, 0));
-            newGameBoard.PlacePiece(new Rook(Color.Black, newGameBoard), new Position(1, 3));
-            newGameBoard.PlacePiece(new King(Color.Black, newGameBoard), new Position(0, 4));
-            
-            DisplayScreen.DisplayGameBoard(newGameBoard);
+            while (!newMatch.MatchFinished)
+            {
+                Console.Clear();
+                DisplayScreen.DisplayGameBoard(newMatch.ChessMatchGameBoard);
+                
+                Console.Write("\nOrigin: ");
+                Position origin = DisplayScreen.ReadChessPosition().ToArrayPosition();
+                
+                Console.Write("Destination: ");
+                Position destination = DisplayScreen.ReadChessPosition().ToArrayPosition();
+                
+                newMatch.PieceMovement(origin, destination);
+            }
         }
         catch (GameBoardExceptions error)
         {

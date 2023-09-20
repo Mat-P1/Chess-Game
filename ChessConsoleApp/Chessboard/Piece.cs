@@ -16,4 +16,9 @@ public class Piece
         PieceBoard = pieceBoard;
         NumberOfMoves = 0;
     }
+
+    public void IncrementsNumberOfMoves()
+    {
+        NumberOfMoves++;
+    }
 }

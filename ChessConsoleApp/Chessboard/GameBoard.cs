@@ -15,12 +15,12 @@ public class GameBoard
         _gameBoardPieces = new Piece[gameBoardRows, gameBoardColumns];
     }
     
-    public Piece ReturnPiecesPositions(int pieceRow, int pieceColumn)
+    public Piece ReturnPiecePosition(int pieceRow, int pieceColumn)
     {
         return _gameBoardPieces[pieceRow, pieceColumn];
     }
     
-    public Piece ReturnPiecesPositions(Position position)
+    public Piece ReturnPiecePosition(Position position)
     {
         return _gameBoardPieces[position.RowPosition, position.ColumnPosition];
     }
@@ -46,7 +46,7 @@ public class GameBoard
     public bool DoesPieceExists(Position pieceExists)
     {
         ValidatePosition(pieceExists);
-        return ReturnPiecesPositions(pieceExists) != null;
+        return ReturnPiecePosition(pieceExists) != null;
     }
     
     public void PlacePiece(Piece setPiece, Position setPosition)
@@ -57,5 +57,17 @@ public class GameBoard
         }
         _gameBoardPieces[setPosition.RowPosition, setPosition.ColumnPosition] = setPiece;
         setPiece.PiecePosition = setPosition;
+    }
+
+    public Piece RemovePiece(Position piecePosition)
+    {
+        if (ReturnPiecePosition(piecePosition) == null)
+        {
+            return null;
+        }
+        Piece aux = ReturnPiecePosition(piecePosition);
+        aux.PiecePosition = null;
+        _gameBoardPieces[piecePosition.RowPosition, piecePosition.ColumnPosition] = null;
+        return aux;
     }
 }
