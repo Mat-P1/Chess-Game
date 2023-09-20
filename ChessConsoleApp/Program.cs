@@ -7,6 +7,6 @@ internal class Program
     public static void Main(string[] args)
     {
         GameBoard newGameBoard = new GameBoard(8, 8);
-        Console.WriteLine("OK " + newGameBoard);
+        DisplayScreen.DisplayGameBoard(newGameBoard);
     }
 }
