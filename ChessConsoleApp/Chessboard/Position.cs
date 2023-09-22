@@ -11,6 +11,12 @@ public class Position
         ColumnPosition = columnPosition;
     }
 
+    public void SetValues(int rowPosition, int columnPosition)
+    {
+        RowPosition = rowPosition;
+        ColumnPosition = columnPosition;
+    }
+
     public override string ToString()
     {
         return $"{RowPosition}, {ColumnPosition}";

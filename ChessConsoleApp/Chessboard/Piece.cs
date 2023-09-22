@@ -2,7 +2,7 @@ using ChessConsoleApp.Chessboard.Enumerations;
 
 namespace ChessConsoleApp.Chessboard;
 
-public class Piece
+public abstract class Piece
 {
     public Position PiecePosition { get; set; }
     public Color PieceColor { get; set; }
@@ -16,6 +16,8 @@ public class Piece
         PieceBoard = pieceBoard;
         NumberOfMoves = 0;
     }
+
+    public abstract bool[,] PossibleMoves();
 
     public void IncrementsNumberOfMoves()
     {
