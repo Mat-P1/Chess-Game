@@ -17,10 +17,7 @@ internal class Program
 
                 try
                 {
-                    Console.Clear();
-                    DisplayScreen.DisplayGameBoard(newMatch.ChessMatchGameBoard);
-                    Console.WriteLine($"\nTurn: {newMatch.MatchTurn}");
-                    Console.WriteLine($"Current Player: {newMatch.CurrentPlayer}");
+                    DisplayScreen.DisplayMatch(newMatch);
                 
                     Console.Write("\nOrigin: ");
                     Position origin = DisplayScreen.ReadChessPosition().ToArrayPosition();

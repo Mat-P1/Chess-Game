@@ -6,6 +6,7 @@ namespace ChessConsoleApp;
 
 public class DisplayScreen
 {
+    
     public static void DisplayGameBoard(GameBoard gameBoardScreen)
     {
         for (int i = 0; i < gameBoardScreen.GameBoardRows; i++)
@@ -76,5 +77,37 @@ public class DisplayScreen
             }
             Console.Write(" ");
         }
+    }
+
+    public static void DisplayPiecesHashSet(HashSet<Piece> collection)
+    {
+        Console.Write("[");
+        foreach (Piece piece in collection)
+        {
+            Console.Write(piece + " ");
+        }
+        Console.Write("]");
+    }
+
+    public static void DisplayCapturedPieces(ChessMatch newMatch)
+    {
+        Console.WriteLine("\nCaptured Pieces");
+        Console.Write("Whites: ");
+        DisplayPiecesHashSet(newMatch.CapturedPieces(Color.White));
+        Console.Write("\nBlacks: ");
+        ConsoleColor aux = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.DarkBlue;
+        DisplayPiecesHashSet(newMatch.CapturedPieces(Color.Black));
+        Console.ForegroundColor = aux;
+        Console.WriteLine();
+    }
+    
+    public static void DisplayMatch(ChessMatch newMatch)
+    {
+        Console.Clear();
+        DisplayGameBoard(newMatch.ChessMatchGameBoard);
+        DisplayCapturedPieces(newMatch);
+        Console.WriteLine($"\nTurn: {newMatch.MatchTurn}");
+        Console.WriteLine($"Current Player: {newMatch.CurrentPlayer}");
     }
 }
