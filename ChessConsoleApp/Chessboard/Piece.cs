@@ -18,7 +18,28 @@ public abstract class Piece
     }
 
     public abstract bool[,] PossibleMoves();
+    
+    public bool CanPieceMoveTo(Position position)
+    {
+        return PossibleMoves()[position.RowPosition, position.ColumnPosition];
+    }
 
+    public bool IsThereAnyPossibleMove()
+    {
+        bool[,] possibleMoves = PossibleMoves();
+        for (int i = 0; i < PieceBoard.GameBoardRows; i++)
+        {
+            for (int j = 0; j < PieceBoard.GameBoardColumns; j++)
+            {
+                if (possibleMoves[i, j])
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
     public void IncrementsNumberOfMoves()
     {
         NumberOfMoves++;
