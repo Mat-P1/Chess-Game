@@ -43,6 +43,7 @@ internal class Program
                 }
             }
         }
+        
         catch (GameBoardExceptions error)
         {
             Console.WriteLine(error.Message);

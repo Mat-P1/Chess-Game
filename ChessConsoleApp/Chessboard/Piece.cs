@@ -27,6 +27,7 @@ public abstract class Piece
     public bool IsThereAnyPossibleMove()
     {
         bool[,] possibleMoves = PossibleMoves();
+        
         for (int i = 0; i < PieceBoard.GameBoardRows; i++)
         {
             for (int j = 0; j < PieceBoard.GameBoardColumns; j++)
@@ -43,5 +44,10 @@ public abstract class Piece
     public void IncrementsNumberOfMoves()
     {
         NumberOfMoves++;
+    }
+    
+    public void DecreaseNumberOfMoves()
+    {
+        NumberOfMoves--;
     }
 }

@@ -55,6 +55,7 @@ public class GameBoard
         {
             throw new GameBoardExceptions("A piece is already placed here!");
         }
+        
         _gameBoardPieces[setPosition.RowPosition, setPosition.ColumnPosition] = setPiece;
         setPiece.PiecePosition = setPosition;
     }
@@ -65,6 +66,7 @@ public class GameBoard
         {
             return null;
         }
+        
         Piece aux = ReturnPiecePosition(piecePosition);
         aux.PiecePosition = null;
         _gameBoardPieces[piecePosition.RowPosition, piecePosition.ColumnPosition] = null;

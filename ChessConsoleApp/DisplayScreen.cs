@@ -6,7 +6,6 @@ namespace ChessConsoleApp;
 
 public class DisplayScreen
 {
-    
     public static void DisplayGameBoard(GameBoard gameBoardScreen)
     {
         for (int i = 0; i < gameBoardScreen.GameBoardRows; i++)
@@ -31,6 +30,7 @@ public class DisplayScreen
             Console.Write(8 - i + " ");
             for (int j = 0; j < gameBoardScreen.GameBoardColumns; j++)
             {
+                
                 if (possiblePositions[i, j])
                 {
                     Console.BackgroundColor = highlightedBackground;
@@ -39,6 +39,7 @@ public class DisplayScreen
                 {
                     Console.BackgroundColor = originalBackground;
                 }
+                
                 DisplayPiece(gameBoardScreen.ReturnPiecePosition(i, j));
                 Console.BackgroundColor = originalBackground;
             }
@@ -82,6 +83,7 @@ public class DisplayScreen
     public static void DisplayPiecesHashSet(HashSet<Piece> collection)
     {
         Console.Write("[");
+        
         foreach (Piece piece in collection)
         {
             Console.Write(piece + " ");
@@ -109,5 +111,9 @@ public class DisplayScreen
         DisplayCapturedPieces(newMatch);
         Console.WriteLine($"\nTurn: {newMatch.MatchTurn}");
         Console.WriteLine($"Current Player: {newMatch.CurrentPlayer}");
+        if (newMatch.Check)
+        {
+            Console.WriteLine("CHECK!");
+        }
     }
 }

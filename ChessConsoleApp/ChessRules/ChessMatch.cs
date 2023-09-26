@@ -12,6 +12,7 @@ public class ChessMatch
     public bool MatchFinished { get; private set; }
     private HashSet<Piece> _piecesOnTheBoard = new();
     private HashSet<Piece> _capturedPieces = new();
+    public bool Check { get; private set; }
 
     public ChessMatch()
     {
@@ -20,6 +21,7 @@ public class ChessMatch
         CurrentPlayer = Color.White;
         PlacePiecesOnBoard();
         MatchFinished = false;
+        Check = false;
     }
 
     public void PlaceNewPiece(char column, int row, Piece piece)
@@ -45,16 +47,18 @@ public class ChessMatch
         PlaceNewPiece('d', 8, new King(Color.Black, ChessMatchGameBoard));
     }
 
-    public void PieceMovement(Position origin, Position destination)
+    public Piece? PieceMovement(Position origin, Position destination)
     {
         Piece pieceMove = ChessMatchGameBoard.RemovePiece(origin);
         pieceMove.IncrementsNumberOfMoves();
         Piece capturedPiece = ChessMatchGameBoard.RemovePiece(destination);
         ChessMatchGameBoard.PlacePiece(pieceMove, destination);
+        
         if (capturedPiece != null)
         {
             _capturedPieces.Add(capturedPiece);
         }
+        return capturedPiece;
     }
 
     public void ValidateOriginPosition(Position position)
@@ -95,9 +99,38 @@ public class ChessMatch
         }
     }
 
+    public void UndoMove(Position origin, Position destination, Piece capturedPiece)
+    {
+        Piece p = ChessMatchGameBoard.RemovePiece(destination);
+        p.DecreaseNumberOfMoves();
+
+        if (capturedPiece != null)
+        {
+            ChessMatchGameBoard.PlacePiece(capturedPiece, destination);
+            _capturedPieces.Remove(capturedPiece);
+        }
+        ChessMatchGameBoard.PlacePiece(p, origin);
+    }
+
     public void MakeAMove(Position origin, Position destination)
     {
-        PieceMovement(origin, destination);
+        Piece? capturedPiece = PieceMovement(origin, destination);
+        
+        if (IsCheck(CurrentPlayer))
+        {
+            UndoMove(origin, destination, capturedPiece);
+            throw new GameBoardExceptions("You cannot put yourself in check");
+        }
+
+        if (IsCheck(AdversaryPiece(CurrentPlayer)))
+        {
+            Check = true;
+        }
+        else
+        {
+            Check = false;
+        }
+        
         MatchTurn++;
         ChangePlayer();
     }
@@ -105,6 +138,7 @@ public class ChessMatch
     public HashSet<Piece> CapturedPieces(Color color)
     {
         HashSet<Piece> aux = new HashSet<Piece>();
+        
         foreach (Piece x in _capturedPieces)
         {
             if (x.PieceColor == color)
@@ -118,6 +152,7 @@ public class ChessMatch
     public HashSet<Piece> PiecesInGame(Color color)
     {
         HashSet<Piece> aux = new HashSet<Piece>();
+        
         foreach (Piece x in _piecesOnTheBoard)
         {
             if (x.PieceColor == color)
@@ -127,5 +162,42 @@ public class ChessMatch
         }
         aux.ExceptWith(CapturedPieces(color));
         return aux;
+    }
+
+    private Color AdversaryPiece(Color color)
+    {
+        return color == Color.White ? Color.Black : Color.White;
+    }
+
+    private Piece? King(Color color)
+    {
+        foreach (Piece x in PiecesInGame(color))
+        {
+            if (x is King)
+            {
+                return x;
+            }
+        }
+        return null;
+    }
+
+    public bool IsCheck(Color color)
+    {
+        Piece? k = King(color);
+        if (k == null)
+        {
+            throw new GameBoardExceptions($"There's no {color} King on the board");
+        }
+        
+        foreach (Piece x in PiecesInGame(AdversaryPiece(color)))
+        {
+            bool[,] possibleMoves = x.PossibleMoves();
+
+            if (possibleMoves[k.PiecePosition.RowPosition, k.PiecePosition.ColumnPosition])
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
