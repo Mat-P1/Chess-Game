@@ -45,7 +45,7 @@ public class DisplayScreen
             }
             Console.WriteLine();
         }
-        Console.WriteLine(" a b c d e f g h");
+        Console.WriteLine("  a b c d e f g h");
         Console.BackgroundColor = originalBackground;
     }
 
@@ -110,10 +110,18 @@ public class DisplayScreen
         DisplayGameBoard(newMatch.ChessMatchGameBoard);
         DisplayCapturedPieces(newMatch);
         Console.WriteLine($"\nTurn: {newMatch.MatchTurn}");
-        Console.WriteLine($"Current Player: {newMatch.CurrentPlayer}");
-        if (newMatch.Check)
+        if (!newMatch.MatchFinished)
         {
-            Console.WriteLine("CHECK!");
+            Console.WriteLine($"Current Player: {newMatch.CurrentPlayer}");
+            if (newMatch.Check)
+            {
+                Console.WriteLine("CHECK!");
+            }
+        } 
+        else 
+        {
+            Console.WriteLine($"CHECKMATE!\nWinner: {newMatch.CurrentPlayer}");
+                
         }
     }
 }

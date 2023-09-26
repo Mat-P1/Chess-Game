@@ -17,6 +17,7 @@ internal class Program
 
                 try
                 {
+                    Console.Clear();
                     DisplayScreen.DisplayMatch(newMatch);
                 
                     Console.Write("\nOrigin: ");
@@ -42,8 +43,9 @@ internal class Program
                     Console.ReadLine();
                 }
             }
+            Console.Clear();
+            DisplayScreen.DisplayMatch(newMatch);
         }
-        
         catch (GameBoardExceptions error)
         {
             Console.WriteLine(error.Message);

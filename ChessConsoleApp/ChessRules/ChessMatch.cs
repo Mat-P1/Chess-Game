@@ -33,18 +33,11 @@ public class ChessMatch
     private void PlacePiecesOnBoard()
     {
         PlaceNewPiece('c', 1, new Rook(Color.White, ChessMatchGameBoard));
-        PlaceNewPiece('c', 2, new Rook(Color.White, ChessMatchGameBoard));
-        PlaceNewPiece('d', 2, new Rook(Color.White, ChessMatchGameBoard));
-        PlaceNewPiece('e', 2, new Rook(Color.White, ChessMatchGameBoard));
-        PlaceNewPiece('e', 1, new Rook(Color.White, ChessMatchGameBoard));
+        PlaceNewPiece('h', 7, new Rook(Color.White, ChessMatchGameBoard));
         PlaceNewPiece('d', 1, new King(Color.White, ChessMatchGameBoard));
         
-        PlaceNewPiece('c', 7, new Rook(Color.Black, ChessMatchGameBoard));
-        PlaceNewPiece('c', 8, new Rook(Color.Black, ChessMatchGameBoard));
-        PlaceNewPiece('d', 7, new Rook(Color.Black, ChessMatchGameBoard));
-        PlaceNewPiece('e', 7, new Rook(Color.Black, ChessMatchGameBoard));
-        PlaceNewPiece('e', 8, new Rook(Color.Black, ChessMatchGameBoard));
-        PlaceNewPiece('d', 8, new King(Color.Black, ChessMatchGameBoard));
+        PlaceNewPiece('b', 8, new Rook(Color.Black, ChessMatchGameBoard));
+        PlaceNewPiece('a', 8, new King(Color.Black, ChessMatchGameBoard));
     }
 
     public Piece? PieceMovement(Position origin, Position destination)
@@ -130,9 +123,16 @@ public class ChessMatch
         {
             Check = false;
         }
-        
-        MatchTurn++;
-        ChangePlayer();
+
+        if (IsCheckMate(AdversaryPiece(CurrentPlayer)))
+        {
+            MatchFinished = true;
+        }
+        else
+        {
+            MatchTurn++;
+            ChangePlayer();
+        }
     }
 
     public HashSet<Piece> CapturedPieces(Color color)
@@ -199,5 +199,38 @@ public class ChessMatch
             }
         }
         return false;
+    }
+
+    public bool IsCheckMate(Color color)
+    {
+        if (!IsCheck(color))
+        {
+            return false;
+        }
+
+        foreach (Piece x in PiecesInGame(color))
+        {
+            bool[,] possibleMoves = x.PossibleMoves();
+            for (int i = 0; i < ChessMatchGameBoard.GameBoardRows; i++)
+            {
+                for (int j = 0; j < ChessMatchGameBoard.GameBoardColumns; j++)
+                {
+                    if (possibleMoves[i, j])
+                    {
+                        Position origin = x.PiecePosition;
+                        Position target = new Position(i, j);
+                        Piece capturedPiece = PieceMovement(origin, target);
+                        bool checkTest = IsCheck(color);
+                        UndoMove(origin, target, capturedPiece);
+
+                        if (!checkTest)
+                        {
+                            return false;
+                        }
+                    }
+                } 
+            }
+        }
+        return true;
     }
 }
