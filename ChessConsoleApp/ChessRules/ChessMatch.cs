@@ -32,12 +32,43 @@ public class ChessMatch
     
     private void PlacePiecesOnBoard()
     {
-        PlaceNewPiece('c', 1, new Rook(Color.White, ChessMatchGameBoard));
-        PlaceNewPiece('h', 7, new Rook(Color.White, ChessMatchGameBoard));
-        PlaceNewPiece('d', 1, new King(Color.White, ChessMatchGameBoard));
+        // White Pieces
+        PlaceNewPiece('a', 1, new Rook(Color.White, ChessMatchGameBoard));
+        PlaceNewPiece('b', 1, new Knight(Color.White, ChessMatchGameBoard));
+        PlaceNewPiece('c', 1, new Bishop(Color.White, ChessMatchGameBoard));
+        PlaceNewPiece('d', 1, new Queen(Color.White, ChessMatchGameBoard));
+        PlaceNewPiece('e', 1, new King(Color.White, ChessMatchGameBoard));
+        PlaceNewPiece('f', 1, new Bishop(Color.White, ChessMatchGameBoard));
+        PlaceNewPiece('g', 1, new Knight(Color.White, ChessMatchGameBoard));
+        PlaceNewPiece('h', 1, new Rook(Color.White, ChessMatchGameBoard));
         
-        PlaceNewPiece('b', 8, new Rook(Color.Black, ChessMatchGameBoard));
-        PlaceNewPiece('a', 8, new King(Color.Black, ChessMatchGameBoard));
+        PlaceNewPiece('a', 2, new Pawn(Color.White, ChessMatchGameBoard));
+        PlaceNewPiece('b', 2, new Pawn(Color.White, ChessMatchGameBoard));
+        PlaceNewPiece('c', 2, new Pawn(Color.White, ChessMatchGameBoard));
+        PlaceNewPiece('d', 2, new Pawn(Color.White, ChessMatchGameBoard));
+        PlaceNewPiece('e', 2, new Pawn(Color.White, ChessMatchGameBoard));
+        PlaceNewPiece('f', 2, new Pawn(Color.White, ChessMatchGameBoard));
+        PlaceNewPiece('g', 2, new Pawn(Color.White, ChessMatchGameBoard));
+        PlaceNewPiece('h', 2, new Pawn(Color.White, ChessMatchGameBoard));
+        
+        // Black Pieces
+        PlaceNewPiece('a', 8, new Rook(Color.Black, ChessMatchGameBoard));
+        PlaceNewPiece('b', 8, new Knight(Color.Black, ChessMatchGameBoard));
+        PlaceNewPiece('c', 8, new Bishop(Color.Black, ChessMatchGameBoard));
+        PlaceNewPiece('d', 8, new Queen(Color.Black, ChessMatchGameBoard));
+        PlaceNewPiece('e', 8, new King(Color.Black, ChessMatchGameBoard));
+        PlaceNewPiece('f', 8, new Bishop(Color.Black, ChessMatchGameBoard));
+        PlaceNewPiece('g', 8, new Knight(Color.Black, ChessMatchGameBoard));
+        PlaceNewPiece('h', 8, new Rook(Color.Black, ChessMatchGameBoard));
+        
+        PlaceNewPiece('a', 7, new Pawn(Color.Black, ChessMatchGameBoard));
+        PlaceNewPiece('b', 7, new Pawn(Color.Black, ChessMatchGameBoard));
+        PlaceNewPiece('c', 7, new Pawn(Color.Black, ChessMatchGameBoard));
+        PlaceNewPiece('d', 7, new Pawn(Color.Black, ChessMatchGameBoard));
+        PlaceNewPiece('e', 7, new Pawn(Color.Black, ChessMatchGameBoard));
+        PlaceNewPiece('f', 7, new Pawn(Color.Black, ChessMatchGameBoard));
+        PlaceNewPiece('g', 7, new Pawn(Color.Black, ChessMatchGameBoard));
+        PlaceNewPiece('h', 7, new Pawn(Color.Black, ChessMatchGameBoard));
     }
 
     public Piece? PieceMovement(Position origin, Position destination)
