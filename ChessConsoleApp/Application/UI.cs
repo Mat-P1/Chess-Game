@@ -4,60 +4,72 @@ using ChessConsoleApp.ChessRules;
 
 namespace ChessConsoleApp.Application;
 
-public class UI
+public static class Ui
 {
-    public static void DisplayGameBoard(GameBoard gameBoardScreen)
+    public static void DisplayMatch(ChessMatch newMatch)
     {
-        for (int i = 0; i < gameBoardScreen.GameBoardRows; i++)
+        Console.Clear();
+        DisplayGameBoard(newMatch.ChessMatchGameBoard);
+        DisplayCapturedPieces(newMatch);
+        Console.WriteLine($"\nTurn: {newMatch.MatchTurn}");
+        
+        if (!newMatch.MatchFinished)
         {
-            Console.Write(8 - i + " ");
-            for (int j = 0; j < gameBoardScreen.GameBoardColumns; j++)
-            {
-                DisplayPiece(gameBoardScreen.ReturnPiecePosition(i, j));
-            }
-            Console.WriteLine();
+            Console.WriteLine($"Current Player: {newMatch.CurrentPlayer}");
+            if (newMatch.Check) Console.WriteLine("CHECK!");
         }
-        Console.WriteLine("  a b c d e f g h");
+        else
+        {
+            Console.WriteLine($"CHECKMATE!\nWinner: {newMatch.CurrentPlayer}");
+        }
     }
-    
+
     public static void DisplayGameBoard(GameBoard gameBoardScreen, bool[,] possiblePositions)
     {
-        ConsoleColor originalBackground = Console.BackgroundColor;
-        ConsoleColor highlightedBackground = ConsoleColor.DarkGray;
+        const ConsoleColor highlightedBackground = ConsoleColor.DarkGray;
+        var originalBackground = Console.BackgroundColor;
         
-        for (int i = 0; i < gameBoardScreen.GameBoardRows; i++)
+        for (var i = 0; i < gameBoardScreen.GameBoardRows; i++)
         {
             Console.Write(8 - i + " ");
-            for (int j = 0; j < gameBoardScreen.GameBoardColumns; j++)
+            for (var j = 0; j < gameBoardScreen.GameBoardColumns; j++)
             {
-                if (possiblePositions[i, j])
-                {
-                    Console.BackgroundColor = highlightedBackground;
-                }
-                else
-                {
-                    Console.BackgroundColor = originalBackground;
-                }
+                Console.BackgroundColor = possiblePositions[i, j] ? highlightedBackground : originalBackground;
                 DisplayPiece(gameBoardScreen.ReturnPiecePosition(i, j));
                 Console.BackgroundColor = originalBackground;
             }
+
             Console.WriteLine();
         }
+
         Console.WriteLine("  a b c d e f g h");
         Console.BackgroundColor = originalBackground;
     }
 
     public static ChessPosition ReadChessPosition()
     {
-        string readPosition = Console.ReadLine() ?? string.Empty;
-        char readColumn = readPosition[0];
-        int readRow  = int.Parse(readPosition[1] + "");
+        var readPosition = Console.ReadLine() ?? string.Empty;
+        var readColumn = readPosition[0];
+        var readRow = int.Parse(readPosition[1] + "");
         return new ChessPosition(readColumn, readRow);
     }
     
-    public static void DisplayPiece(Piece piece)
+    private static void DisplayGameBoard(GameBoard gameBoardScreen)
     {
-        if (piece == null) 
+        for (var i = 0; i < gameBoardScreen.GameBoardRows; i++)
+        {
+            Console.Write(8 - i + " ");
+            for (var j = 0; j < gameBoardScreen.GameBoardColumns; j++)
+                DisplayPiece(gameBoardScreen.ReturnPiecePosition(i, j));
+            Console.WriteLine();
+        }
+
+        Console.WriteLine("  a b c d e f g h");
+    }
+    
+    private static void DisplayPiece(Piece piece)
+    {
+        if (piece == null)
         {
             Console.Write("_ ");
         }
@@ -69,57 +81,35 @@ public class UI
             }
             else
             {
-                ConsoleColor aux = Console.ForegroundColor;
+                var aux = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.DarkBlue;
                 Console.Write(piece);
                 Console.ForegroundColor = aux;
             }
+
             Console.Write(" ");
         }
     }
 
-    public static void DisplayPiecesHashSet(HashSet<Piece> collection)
+    private static void DisplayPiecesHashSet(HashSet<Piece> collection)
     {
         Console.Write("[");
-        foreach (Piece piece in collection)
-        {
-            Console.Write(piece + " ");
-        }
+        foreach (var piece in collection) Console.Write(piece + " ");
         Console.Write("]");
     }
 
-    public static void DisplayCapturedPieces(ChessMatch newMatch)
+    private static void DisplayCapturedPieces(ChessMatch newMatch)
     {
         Console.WriteLine("\nCaptured Pieces");
         Console.Write("Whites: ");
         DisplayPiecesHashSet(newMatch.CapturedPieces(Color.White));
-        
+
         Console.Write("\nBlacks: ");
-        ConsoleColor aux = Console.ForegroundColor;
+        var aux = Console.ForegroundColor;
         Console.ForegroundColor = ConsoleColor.DarkBlue;
         DisplayPiecesHashSet(newMatch.CapturedPieces(Color.Black));
         Console.ForegroundColor = aux;
-        
+
         Console.WriteLine();
-    }
-    
-    public static void DisplayMatch(ChessMatch newMatch)
-    {
-        Console.Clear();
-        DisplayGameBoard(newMatch.ChessMatchGameBoard);
-        DisplayCapturedPieces(newMatch);
-        Console.WriteLine($"\nTurn: {newMatch.MatchTurn}");
-        if (!newMatch.MatchFinished)
-        {
-            Console.WriteLine($"Current Player: {newMatch.CurrentPlayer}");
-            if (newMatch.Check)
-            {
-                Console.WriteLine("CHECK!");
-            }
-        } 
-        else 
-        {
-            Console.WriteLine($"CHECKMATE!\nWinner: {newMatch.CurrentPlayer}");
-        }
     }
 }

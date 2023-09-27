@@ -4,8 +4,8 @@ namespace ChessConsoleApp.Chessboard;
 
 public class GameBoard
 {
-    public int GameBoardRows { get; set; }
-    public int GameBoardColumns { get; set; }
+    public int GameBoardRows { get; }
+    public int GameBoardColumns { get; }
     private readonly Piece[,] _gameBoardPieces;
 
     public GameBoard(int gameBoardRows, int gameBoardColumns)
@@ -19,7 +19,7 @@ public class GameBoard
     {
         return _gameBoardPieces[pieceRow, pieceColumn];
     }
-    
+
     public Piece ReturnPiecePosition(Position position)
     {
         return _gameBoardPieces[position.RowPosition, position.ColumnPosition];
@@ -29,47 +29,36 @@ public class GameBoard
     {
         if (validPosition.RowPosition < 0 || validPosition.RowPosition >= GameBoardRows ||
             validPosition.ColumnPosition < 0 || validPosition.ColumnPosition >= GameBoardRows)
-        {
             return false;
-        }
         return true;
-    }
-
-    public void ValidatePosition(Position validatePosition)
-    {
-        if (!IsValidPosition(validatePosition))
-        {
-            throw new GameBoardExceptions("Invalid position!");
-        }
-    }
-
-    public bool DoesPieceExists(Position pieceExists)
-    {
-        ValidatePosition(pieceExists);
-        return ReturnPiecePosition(pieceExists) != null;
     }
     
     public void PlacePiece(Piece setPiece, Position setPosition)
     {
-        if (DoesPieceExists(setPosition))
-        {
-            throw new GameBoardExceptions("A piece is already placed here!");
-        }
-        
+        if (DoesPieceExists(setPosition)) throw new GameBoardExceptions("A piece is already placed here!");
+
         _gameBoardPieces[setPosition.RowPosition, setPosition.ColumnPosition] = setPiece;
         setPiece.PiecePosition = setPosition;
     }
-
+    
     public Piece RemovePiece(Position piecePosition)
     {
-        if (ReturnPiecePosition(piecePosition) == null)
-        {
-            return null;
-        }
-        
-        Piece aux = ReturnPiecePosition(piecePosition);
-        aux.PiecePosition = null;
-        _gameBoardPieces[piecePosition.RowPosition, piecePosition.ColumnPosition] = null;
+        if (ReturnPiecePosition(piecePosition) == null) return null!;
+
+        var aux = ReturnPiecePosition(piecePosition);
+        aux.PiecePosition = null!;
+        _gameBoardPieces[piecePosition.RowPosition, piecePosition.ColumnPosition] = null!;
         return aux;
+    }
+
+    private void ValidatePosition(Position validatePosition)
+    {
+        if (!IsValidPosition(validatePosition)) throw new GameBoardExceptions("Invalid position!");
+    }
+
+    private bool DoesPieceExists(Position pieceExists)
+    {
+        ValidatePosition(pieceExists);
+        return ReturnPiecePosition(pieceExists) != null;
     }
 }

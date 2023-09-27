@@ -5,20 +5,20 @@ namespace ChessConsoleApp.Chessboard;
 public abstract class Piece
 {
     public Position PiecePosition { get; set; }
-    public Color PieceColor { get; set; }
-    public int NumberOfMoves { get; protected set; }
-    public GameBoard PieceBoard { get; protected set; }
+    public Color PieceColor { get; }
+    public int NumberOfMoves { get; private set; }
+    protected GameBoard PieceBoard { get; }
 
-    public Piece(Color pieceColor, GameBoard pieceBoard)
+    protected Piece(Color pieceColor, GameBoard pieceBoard)
     {
-        PiecePosition = null;
+        PiecePosition = null!;
         PieceColor = pieceColor;
         PieceBoard = pieceBoard;
         NumberOfMoves = 0;
     }
-
-    public abstract bool[,] PossibleMoves();
     
+    public abstract bool[,] PossibleMoves();
+
     public bool CanPieceMoveTo(Position position)
     {
         return PossibleMoves()[position.RowPosition, position.ColumnPosition];
@@ -26,26 +26,20 @@ public abstract class Piece
 
     public bool IsThereAnyPossibleMove()
     {
-        bool[,] possibleMoves = PossibleMoves();
-        
-        for (int i = 0; i < PieceBoard.GameBoardRows; i++)
-        {
-            for (int j = 0; j < PieceBoard.GameBoardColumns; j++)
-            {
-                if (possibleMoves[i, j])
-                {
-                    return true;
-                }
-            }
-        }
+        var possibleMoves = PossibleMoves();
+
+        for (var i = 0; i < PieceBoard.GameBoardRows; i++)
+        for (var j = 0; j < PieceBoard.GameBoardColumns; j++)
+            if (possibleMoves[i, j])
+                return true;
         return false;
     }
-    
+
     public void IncrementsNumberOfMoves()
     {
         NumberOfMoves++;
     }
-    
+
     public void DecreaseNumberOfMoves()
     {
         NumberOfMoves--;
