@@ -5,8 +5,10 @@ namespace ChessConsoleApp.ChessRules.Pieces;
 
 public class Pawn : Piece
 {
-    public Pawn(Color pieceColor, GameBoard pieceBoard) : base(pieceColor, pieceBoard)
+    private ChessMatch _match;
+    public Pawn(Color pieceColor, GameBoard pieceBoard, ChessMatch match) : base(pieceColor, pieceBoard)
     {
+        _match = match;
     }
     
     private bool IsThereAdversary(Position position)
@@ -51,7 +53,26 @@ public class Pawn : Piece
             {
                 moveArray[movePosition.RowPosition, movePosition.ColumnPosition] = true;
             }
+            
+            // En Passant
+            if (PiecePosition.RowPosition == 3) 
+            {
+                Position left = new Position(PiecePosition.RowPosition, PiecePosition.ColumnPosition - 1);
+                if (PieceBoard.IsValidPosition(left) && IsThereAdversary(left) &&
+                    PieceBoard.ReturnPiecePosition(left) == _match.VulnerableEnPassant)
+                {
+                    moveArray[left.RowPosition - 1, left.ColumnPosition] = true;
+                } // Left
+                
+                Position right = new Position(PiecePosition.RowPosition, PiecePosition.ColumnPosition + 1);
+                if (PieceBoard.IsValidPosition(right) && IsThereAdversary(right) &&
+                    PieceBoard.ReturnPiecePosition(right) == _match.VulnerableEnPassant)
+                {
+                    moveArray[right.RowPosition - 1, right.ColumnPosition] = true;
+                } // Right
+            } 
         }
+        
         // Black Pawn moves
         else
         {
@@ -78,6 +99,24 @@ public class Pawn : Piece
             {
                 moveArray[movePosition.RowPosition, movePosition.ColumnPosition] = true;
             }
+            
+            // En Passant
+            if (PiecePosition.RowPosition == 4) 
+            {
+                Position left = new Position(PiecePosition.RowPosition, PiecePosition.ColumnPosition - 1);
+                if (PieceBoard.IsValidPosition(left) && IsThereAdversary(left) &&
+                    PieceBoard.ReturnPiecePosition(left) == _match.VulnerableEnPassant)
+                {
+                    moveArray[left.RowPosition + 1, left.ColumnPosition] = true;
+                } // Left
+                
+                Position right = new Position(PiecePosition.RowPosition, PiecePosition.ColumnPosition + 1);
+                if (PieceBoard.IsValidPosition(right) && IsThereAdversary(right) &&
+                    PieceBoard.ReturnPiecePosition(right) == _match.VulnerableEnPassant)
+                {
+                    moveArray[right.RowPosition + 1, right.ColumnPosition] = true;
+                } // Right
+            } 
         }
         
         return moveArray;

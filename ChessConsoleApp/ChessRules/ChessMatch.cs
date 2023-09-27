@@ -14,17 +14,19 @@ public class ChessMatch
     private HashSet<Piece> _piecesOnTheBoard = new();
     private HashSet<Piece> _capturedPieces = new();
     public bool Check { get; private set; }
+    public Piece? VulnerableEnPassant { get; private set; }
 
     public ChessMatch()
     {
         ChessMatchGameBoard = new GameBoard(8, 8);
         MatchTurn = 1;
         CurrentPlayer = Color.White;
-        PlacePiecesOnBoard();
         MatchFinished = false;
         Check = false;
+        VulnerableEnPassant = null;
+        PlacePiecesOnBoard();
     }
-
+    
     public void PlaceNewPiece(char column, int row, Piece piece)
     {
         ChessMatchGameBoard.PlacePiece(piece, new ChessPosition(column, row).ToArrayPosition());
@@ -43,14 +45,14 @@ public class ChessMatch
         PlaceNewPiece('g', 1, new Knight(Color.White, ChessMatchGameBoard));
         PlaceNewPiece('h', 1, new Rook(Color.White, ChessMatchGameBoard));
         
-        PlaceNewPiece('a', 2, new Pawn(Color.White, ChessMatchGameBoard));
-        PlaceNewPiece('b', 2, new Pawn(Color.White, ChessMatchGameBoard));
-        PlaceNewPiece('c', 2, new Pawn(Color.White, ChessMatchGameBoard));
-        PlaceNewPiece('d', 2, new Pawn(Color.White, ChessMatchGameBoard));
-        PlaceNewPiece('e', 2, new Pawn(Color.White, ChessMatchGameBoard));
-        PlaceNewPiece('f', 2, new Pawn(Color.White, ChessMatchGameBoard));
-        PlaceNewPiece('g', 2, new Pawn(Color.White, ChessMatchGameBoard));
-        PlaceNewPiece('h', 2, new Pawn(Color.White, ChessMatchGameBoard));
+        PlaceNewPiece('a', 2, new Pawn(Color.White, ChessMatchGameBoard, this));
+        PlaceNewPiece('b', 2, new Pawn(Color.White, ChessMatchGameBoard, this));
+        PlaceNewPiece('c', 2, new Pawn(Color.White, ChessMatchGameBoard, this));
+        PlaceNewPiece('d', 2, new Pawn(Color.White, ChessMatchGameBoard, this));
+        PlaceNewPiece('e', 2, new Pawn(Color.White, ChessMatchGameBoard, this));
+        PlaceNewPiece('f', 2, new Pawn(Color.White, ChessMatchGameBoard, this));
+        PlaceNewPiece('g', 2, new Pawn(Color.White, ChessMatchGameBoard, this));
+        PlaceNewPiece('h', 2, new Pawn(Color.White, ChessMatchGameBoard, this));
         
         // Black Pieces
         PlaceNewPiece('a', 8, new Rook(Color.Black, ChessMatchGameBoard));
@@ -62,14 +64,14 @@ public class ChessMatch
         PlaceNewPiece('g', 8, new Knight(Color.Black, ChessMatchGameBoard));
         PlaceNewPiece('h', 8, new Rook(Color.Black, ChessMatchGameBoard));
         
-        PlaceNewPiece('a', 7, new Pawn(Color.Black, ChessMatchGameBoard));
-        PlaceNewPiece('b', 7, new Pawn(Color.Black, ChessMatchGameBoard));
-        PlaceNewPiece('c', 7, new Pawn(Color.Black, ChessMatchGameBoard));
-        PlaceNewPiece('d', 7, new Pawn(Color.Black, ChessMatchGameBoard));
-        PlaceNewPiece('e', 7, new Pawn(Color.Black, ChessMatchGameBoard));
-        PlaceNewPiece('f', 7, new Pawn(Color.Black, ChessMatchGameBoard));
-        PlaceNewPiece('g', 7, new Pawn(Color.Black, ChessMatchGameBoard));
-        PlaceNewPiece('h', 7, new Pawn(Color.Black, ChessMatchGameBoard));
+        PlaceNewPiece('a', 7, new Pawn(Color.Black, ChessMatchGameBoard, this));
+        PlaceNewPiece('b', 7, new Pawn(Color.Black, ChessMatchGameBoard, this));
+        PlaceNewPiece('c', 7, new Pawn(Color.Black, ChessMatchGameBoard, this));
+        PlaceNewPiece('d', 7, new Pawn(Color.Black, ChessMatchGameBoard, this));
+        PlaceNewPiece('e', 7, new Pawn(Color.Black, ChessMatchGameBoard, this));
+        PlaceNewPiece('f', 7, new Pawn(Color.Black, ChessMatchGameBoard, this));
+        PlaceNewPiece('g', 7, new Pawn(Color.Black, ChessMatchGameBoard, this));
+        PlaceNewPiece('h', 7, new Pawn(Color.Black, ChessMatchGameBoard, this));
     }
 
     public Piece? PieceMovement(Position origin, Position destination)
@@ -102,6 +104,26 @@ public class ChessMatch
             Piece piece = ChessMatchGameBoard.RemovePiece(pieceOrigin);
             piece.IncrementsNumberOfMoves();
             ChessMatchGameBoard.PlacePiece(piece, pieceDestination);
+        }
+        
+        // En Passant
+        if (pieceMove is Pawn)
+        {
+            if (origin.ColumnPosition != destination.ColumnPosition && capturedPiece == null)
+            {
+                Position pawnPosition;
+                if (pieceMove.PieceColor == Color.White)
+                {
+                    pawnPosition = new Position(destination.RowPosition + 1, destination.ColumnPosition);
+                }
+                else
+                {
+                    pawnPosition = new Position(destination.RowPosition - 1, destination.ColumnPosition);
+                }
+
+                capturedPiece = ChessMatchGameBoard.RemovePiece(pawnPosition);
+                _capturedPieces.Add(capturedPiece);
+            }
         }
         
         return capturedPiece;
@@ -147,18 +169,18 @@ public class ChessMatch
 
     public void UndoMove(Position origin, Position destination, Piece capturedPiece)
     {
-        Piece p = ChessMatchGameBoard.RemovePiece(destination);
-        p.DecreaseNumberOfMoves();
+        Piece pieceUndo = ChessMatchGameBoard.RemovePiece(destination);
+        pieceUndo.DecreaseNumberOfMoves();
 
         if (capturedPiece != null)
         {
             ChessMatchGameBoard.PlacePiece(capturedPiece, destination);
             _capturedPieces.Remove(capturedPiece);
         }
-        ChessMatchGameBoard.PlacePiece(p, origin);
+        ChessMatchGameBoard.PlacePiece(pieceUndo, origin);
         
         // Short Castling
-        if (p is King && destination.ColumnPosition == origin.ColumnPosition + 2)
+        if (pieceUndo is King && destination.ColumnPosition == origin.ColumnPosition + 2)
         {
             Position pieceOrigin = new Position(origin.RowPosition, origin.ColumnPosition + 3);
             Position pieceDestination = new Position(origin.RowPosition, origin.ColumnPosition + 1);
@@ -168,7 +190,7 @@ public class ChessMatch
         }
         
         // Long Castling
-        if (p is King && destination.ColumnPosition == origin.ColumnPosition - 2)
+        if (pieceUndo is King && destination.ColumnPosition == origin.ColumnPosition - 2)
         {
             Position pieceOrigin = new Position(origin.RowPosition, origin.ColumnPosition - 4);
             Position pieceDestination = new Position(origin.RowPosition, origin.ColumnPosition - 1);
@@ -177,6 +199,24 @@ public class ChessMatch
             ChessMatchGameBoard.PlacePiece(piece, pieceOrigin);
         }
         
+        // En Passant
+        if (pieceUndo is Pawn)
+        {
+            if (origin.ColumnPosition != destination.ColumnPosition && capturedPiece == VulnerableEnPassant)
+            {
+                Piece pawn = ChessMatchGameBoard.RemovePiece(destination);
+                Position pawnPosition;
+                if (pieceUndo.PieceColor == Color.White)
+                {
+                    pawnPosition = new Position(3, destination.ColumnPosition);
+                }
+                else
+                {
+                    pawnPosition = new Position(4, destination.ColumnPosition);
+                }
+                ChessMatchGameBoard.PlacePiece(pawn, pawnPosition);
+            }
+        }
     }
 
     public void MakeAMove(Position origin, Position destination)
@@ -206,6 +246,17 @@ public class ChessMatch
         {
             MatchTurn++;
             ChangePlayer();
+        }
+        
+        // En Passant
+        Piece piece = ChessMatchGameBoard.ReturnPiecePosition(destination);
+        if (piece is Pawn && (destination.RowPosition == origin.RowPosition - 2 || destination.RowPosition == origin.RowPosition + 2))
+        {
+            VulnerableEnPassant = piece;
+        }
+        else
+        {
+            VulnerableEnPassant = null;
         }
     }
 
