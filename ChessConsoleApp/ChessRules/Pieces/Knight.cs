@@ -1,7 +1,7 @@
 using ChessConsoleApp.Chessboard;
 using ChessConsoleApp.Chessboard.Enumerations;
 
-namespace ChessConsoleApp.ChessRules;
+namespace ChessConsoleApp.ChessRules.Pieces;
 
 public class Knight : Piece
 {
@@ -75,6 +75,6 @@ public class Knight : Piece
         
     public override string ToString()
     {
-        return "T";
+        return "N";
     }
 }

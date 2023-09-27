@@ -2,7 +2,7 @@
 using ChessConsoleApp.Chessboard.Exceptions;
 using ChessConsoleApp.ChessRules;
 
-namespace ChessConsoleApp;
+namespace ChessConsoleApp.Application;
 
 internal class Program
 {
@@ -14,23 +14,22 @@ internal class Program
             
             while (!newMatch.MatchFinished)
             {
-
                 try
                 {
                     Console.Clear();
-                    DisplayScreen.DisplayMatch(newMatch);
+                    UI.DisplayMatch(newMatch);
                 
                     Console.Write("\nOrigin: ");
-                    Position origin = DisplayScreen.ReadChessPosition().ToArrayPosition();
+                    Position origin = UI.ReadChessPosition().ToArrayPosition();
                     newMatch.ValidateOriginPosition(origin);
 
                     bool[,] possiblePositions = newMatch.ChessMatchGameBoard.ReturnPiecePosition(origin).PossibleMoves();
                 
                     Console.Clear();
-                    DisplayScreen.DisplayGameBoard(newMatch.ChessMatchGameBoard, possiblePositions);
+                    UI.DisplayGameBoard(newMatch.ChessMatchGameBoard, possiblePositions);
                 
                     Console.Write("\nDestination: ");
-                    Position destination = DisplayScreen.ReadChessPosition().ToArrayPosition();
+                    Position destination = UI.ReadChessPosition().ToArrayPosition();
                     newMatch.ValidateTargetPosition(origin, destination);
                 
                     newMatch.MakeAMove(origin, destination);
@@ -44,8 +43,9 @@ internal class Program
                 }
             }
             Console.Clear();
-            DisplayScreen.DisplayMatch(newMatch);
+            UI.DisplayMatch(newMatch);
         }
+        
         catch (GameBoardExceptions error)
         {
             Console.WriteLine(error.Message);

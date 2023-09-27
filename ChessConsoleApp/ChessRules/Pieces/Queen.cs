@@ -1,7 +1,7 @@
 using ChessConsoleApp.Chessboard;
 using ChessConsoleApp.Chessboard.Enumerations;
 
-namespace ChessConsoleApp.ChessRules;
+namespace ChessConsoleApp.ChessRules.Pieces;
 
 public class Queen : Piece
 {

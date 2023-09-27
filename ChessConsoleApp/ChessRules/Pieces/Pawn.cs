@@ -1,19 +1,14 @@
 using ChessConsoleApp.Chessboard;
 using ChessConsoleApp.Chessboard.Enumerations;
 
-namespace ChessConsoleApp.ChessRules;
+namespace ChessConsoleApp.ChessRules.Pieces;
 
 public class Pawn : Piece
 {
     public Pawn(Color pieceColor, GameBoard pieceBoard) : base(pieceColor, pieceBoard)
     {
     }
-
-    public override string ToString()
-    {
-        return "P";
-    }
-
+    
     private bool IsThereAdversary(Position position)
     {
         Piece piece = PieceBoard.ReturnPiecePosition(position);
@@ -87,4 +82,9 @@ public class Pawn : Piece
         
         return moveArray;
     }
+     
+     public override string ToString()
+     {
+         return "P";
+     }
 }

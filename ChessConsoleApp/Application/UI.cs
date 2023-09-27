@@ -2,9 +2,9 @@ using ChessConsoleApp.Chessboard;
 using ChessConsoleApp.Chessboard.Enumerations;
 using ChessConsoleApp.ChessRules;
 
-namespace ChessConsoleApp;
+namespace ChessConsoleApp.Application;
 
-public class DisplayScreen
+public class UI
 {
     public static void DisplayGameBoard(GameBoard gameBoardScreen)
     {
@@ -30,7 +30,6 @@ public class DisplayScreen
             Console.Write(8 - i + " ");
             for (int j = 0; j < gameBoardScreen.GameBoardColumns; j++)
             {
-                
                 if (possiblePositions[i, j])
                 {
                     Console.BackgroundColor = highlightedBackground;
@@ -39,7 +38,6 @@ public class DisplayScreen
                 {
                     Console.BackgroundColor = originalBackground;
                 }
-                
                 DisplayPiece(gameBoardScreen.ReturnPiecePosition(i, j));
                 Console.BackgroundColor = originalBackground;
             }
@@ -83,7 +81,6 @@ public class DisplayScreen
     public static void DisplayPiecesHashSet(HashSet<Piece> collection)
     {
         Console.Write("[");
-        
         foreach (Piece piece in collection)
         {
             Console.Write(piece + " ");
@@ -96,11 +93,13 @@ public class DisplayScreen
         Console.WriteLine("\nCaptured Pieces");
         Console.Write("Whites: ");
         DisplayPiecesHashSet(newMatch.CapturedPieces(Color.White));
+        
         Console.Write("\nBlacks: ");
         ConsoleColor aux = Console.ForegroundColor;
         Console.ForegroundColor = ConsoleColor.DarkBlue;
         DisplayPiecesHashSet(newMatch.CapturedPieces(Color.Black));
         Console.ForegroundColor = aux;
+        
         Console.WriteLine();
     }
     
@@ -121,7 +120,6 @@ public class DisplayScreen
         else 
         {
             Console.WriteLine($"CHECKMATE!\nWinner: {newMatch.CurrentPlayer}");
-                
         }
     }
 }

@@ -1,11 +1,11 @@
 using ChessConsoleApp.Chessboard;
 using ChessConsoleApp.Chessboard.Enumerations;
 
-namespace ChessConsoleApp.ChessRules;
+namespace ChessConsoleApp.ChessRules.Pieces;
 
-public class Bishop : Piece
+public class Rook : Piece
 {
-    public Bishop(Color pieceColor, GameBoard pieceBoard) : base(pieceColor, pieceBoard)
+    public Rook(Color pieceColor, GameBoard pieceBoard) : base(pieceColor, pieceBoard)
     {
     }
     
@@ -20,8 +20,8 @@ public class Bishop : Piece
         bool[,] moveArray = new bool[PieceBoard.GameBoardRows, PieceBoard.GameBoardColumns];
         Position movePosition = new Position(0, 0);
         
-        // Upper Diagonal Right
-        movePosition.SetValues(PiecePosition.RowPosition - 1, PiecePosition.ColumnPosition - 1);
+        // Above
+        movePosition.SetValues(PiecePosition.RowPosition - 1, PiecePosition.ColumnPosition);
         while (PieceBoard.IsValidPosition(movePosition) && CanMove(movePosition))
         {
             moveArray[movePosition.RowPosition, movePosition.ColumnPosition] = true;
@@ -29,11 +29,11 @@ public class Bishop : Piece
             {
                 break;
             }
-            movePosition.SetValues(movePosition.RowPosition - 1, movePosition.ColumnPosition - 1);
+            movePosition.RowPosition -= 1;
         }
         
-        // Upper Diagonal Left
-        movePosition.SetValues(PiecePosition.RowPosition - 1, PiecePosition.ColumnPosition + 1);
+        // Right
+        movePosition.SetValues(PiecePosition.RowPosition, PiecePosition.ColumnPosition + 1);
         while (PieceBoard.IsValidPosition(movePosition) && CanMove(movePosition))
         {
             moveArray[movePosition.RowPosition, movePosition.ColumnPosition] = true;
@@ -41,11 +41,11 @@ public class Bishop : Piece
             {
                 break;
             }
-            movePosition.SetValues(movePosition.RowPosition -1, movePosition.ColumnPosition + 1);
+            movePosition.ColumnPosition += 1;
         }
         
-        // Lower Diagonal Left
-        movePosition.SetValues(PiecePosition.RowPosition + 1, PiecePosition.ColumnPosition + 1);
+        // Below
+        movePosition.SetValues(PiecePosition.RowPosition + 1, PiecePosition.ColumnPosition);
         while (PieceBoard.IsValidPosition(movePosition) && CanMove(movePosition))
         {
             moveArray[movePosition.RowPosition, movePosition.ColumnPosition] = true;
@@ -53,11 +53,11 @@ public class Bishop : Piece
             {
                 break;
             }
-            movePosition.SetValues(movePosition.RowPosition + 1, movePosition.ColumnPosition + 1);
+            movePosition.RowPosition += 1;
         }
         
-        // Lower Diagonal Right
-        movePosition.SetValues(PiecePosition.RowPosition + 1, PiecePosition.ColumnPosition - 1);
+        // Left
+        movePosition.SetValues(PiecePosition.RowPosition, PiecePosition.ColumnPosition - 1);
         while (PieceBoard.IsValidPosition(movePosition) && CanMove(movePosition))
         {
             moveArray[movePosition.RowPosition, movePosition.ColumnPosition] = true;
@@ -65,14 +65,14 @@ public class Bishop : Piece
             {
                 break;
             }
-            movePosition.SetValues(movePosition.RowPosition + 1, movePosition.ColumnPosition - 1);
+            movePosition.ColumnPosition -= 1;
         }
-
+        
         return moveArray;
     }
     
     public override string ToString()
     {
-        return "B";
+        return "R";
     }
 }

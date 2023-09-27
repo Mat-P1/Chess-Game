@@ -1,6 +1,7 @@
 using ChessConsoleApp.Chessboard;
 using ChessConsoleApp.Chessboard.Enumerations;
 using ChessConsoleApp.Chessboard.Exceptions;
+using ChessConsoleApp.ChessRules.Pieces;
 
 namespace ChessConsoleApp.ChessRules;
 
@@ -37,7 +38,7 @@ public class ChessMatch
         PlaceNewPiece('b', 1, new Knight(Color.White, ChessMatchGameBoard));
         PlaceNewPiece('c', 1, new Bishop(Color.White, ChessMatchGameBoard));
         PlaceNewPiece('d', 1, new Queen(Color.White, ChessMatchGameBoard));
-        PlaceNewPiece('e', 1, new King(Color.White, ChessMatchGameBoard));
+        PlaceNewPiece('e', 1, new King(Color.White, ChessMatchGameBoard, this));
         PlaceNewPiece('f', 1, new Bishop(Color.White, ChessMatchGameBoard));
         PlaceNewPiece('g', 1, new Knight(Color.White, ChessMatchGameBoard));
         PlaceNewPiece('h', 1, new Rook(Color.White, ChessMatchGameBoard));
@@ -56,7 +57,7 @@ public class ChessMatch
         PlaceNewPiece('b', 8, new Knight(Color.Black, ChessMatchGameBoard));
         PlaceNewPiece('c', 8, new Bishop(Color.Black, ChessMatchGameBoard));
         PlaceNewPiece('d', 8, new Queen(Color.Black, ChessMatchGameBoard));
-        PlaceNewPiece('e', 8, new King(Color.Black, ChessMatchGameBoard));
+        PlaceNewPiece('e', 8, new King(Color.Black, ChessMatchGameBoard, this));
         PlaceNewPiece('f', 8, new Bishop(Color.Black, ChessMatchGameBoard));
         PlaceNewPiece('g', 8, new Knight(Color.Black, ChessMatchGameBoard));
         PlaceNewPiece('h', 8, new Rook(Color.Black, ChessMatchGameBoard));
@@ -82,6 +83,27 @@ public class ChessMatch
         {
             _capturedPieces.Add(capturedPiece);
         }
+        
+        // Short Castling
+        if (pieceMove is King && destination.ColumnPosition == origin.ColumnPosition + 2)
+        {
+            Position pieceOrigin = new Position(origin.RowPosition, origin.ColumnPosition + 3);
+            Position pieceDestination = new Position(origin.RowPosition, origin.ColumnPosition + 1);
+            Piece piece = ChessMatchGameBoard.RemovePiece(pieceOrigin);
+            piece.IncrementsNumberOfMoves();
+            ChessMatchGameBoard.PlacePiece(piece, pieceDestination);
+        }
+        
+        // Long Castling
+        if (pieceMove is King && destination.ColumnPosition == origin.ColumnPosition - 2)
+        {
+            Position pieceOrigin = new Position(origin.RowPosition, origin.ColumnPosition - 4);
+            Position pieceDestination = new Position(origin.RowPosition, origin.ColumnPosition - 1);
+            Piece piece = ChessMatchGameBoard.RemovePiece(pieceOrigin);
+            piece.IncrementsNumberOfMoves();
+            ChessMatchGameBoard.PlacePiece(piece, pieceDestination);
+        }
+        
         return capturedPiece;
     }
 
@@ -134,6 +156,27 @@ public class ChessMatch
             _capturedPieces.Remove(capturedPiece);
         }
         ChessMatchGameBoard.PlacePiece(p, origin);
+        
+        // Short Castling
+        if (p is King && destination.ColumnPosition == origin.ColumnPosition + 2)
+        {
+            Position pieceOrigin = new Position(origin.RowPosition, origin.ColumnPosition + 3);
+            Position pieceDestination = new Position(origin.RowPosition, origin.ColumnPosition + 1);
+            Piece piece = ChessMatchGameBoard.RemovePiece(pieceDestination);
+            piece.DecreaseNumberOfMoves();
+            ChessMatchGameBoard.PlacePiece(piece, pieceOrigin);
+        }
+        
+        // Long Castling
+        if (p is King && destination.ColumnPosition == origin.ColumnPosition - 2)
+        {
+            Position pieceOrigin = new Position(origin.RowPosition, origin.ColumnPosition - 4);
+            Position pieceDestination = new Position(origin.RowPosition, origin.ColumnPosition - 1);
+            Piece piece = ChessMatchGameBoard.RemovePiece(pieceDestination);
+            piece.DecreaseNumberOfMoves();
+            ChessMatchGameBoard.PlacePiece(piece, pieceOrigin);
+        }
+        
     }
 
     public void MakeAMove(Position origin, Position destination)
