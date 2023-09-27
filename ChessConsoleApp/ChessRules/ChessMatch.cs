@@ -228,6 +228,21 @@ public class ChessMatch
             UndoMove(origin, destination, capturedPiece);
             throw new GameBoardExceptions("You cannot put yourself in check");
         }
+        
+        Piece piece = ChessMatchGameBoard.ReturnPiecePosition(destination);
+        
+        // Pawn Promotion to Queen
+        if (piece is Pawn)
+        {
+            if ((piece.PieceColor == Color.White && destination.RowPosition == 0) || (piece.PieceColor == Color.Black && destination.RowPosition == 7))
+            {
+                piece = ChessMatchGameBoard.RemovePiece(destination);
+                _piecesOnTheBoard.Remove(piece);
+                Piece queen = new Queen(piece.PieceColor, ChessMatchGameBoard);
+                ChessMatchGameBoard.PlacePiece(queen, destination);
+                _piecesOnTheBoard.Add(queen);
+            }
+        }
 
         if (IsCheck(AdversaryPiece(CurrentPlayer)))
         {
@@ -249,7 +264,7 @@ public class ChessMatch
         }
         
         // En Passant
-        Piece piece = ChessMatchGameBoard.ReturnPiecePosition(destination);
+       
         if (piece is Pawn && (destination.RowPosition == origin.RowPosition - 2 || destination.RowPosition == origin.RowPosition + 2))
         {
             VulnerableEnPassant = piece;
